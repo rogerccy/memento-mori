@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Die With Zero</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d0d;
+      color: #e8e8e8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── Center screens (auth / setup) ── */
+    .center-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      min-height: 100vh;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 200;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      color: #555;
+      font-size: 0.82rem;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .form-group { width: 100%; display: flex; flex-direction: column; gap: 7px; }
+
+    .form-label {
+      font-size: 0.7rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    input[type="password"],
+    input[type="date"] {
+      background: #181818;
+      border: 1px solid #2e2e2e;
+      color: #e8e8e8;
+      padding: 11px 14px;
+      font-size: 0.95rem;
+      border-radius: 4px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus { border-color: #555; }
+
+    input[type="range"] { width: 100%; accent-color: #e8e8e8; cursor: pointer; }
+
+    .range-val {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 200;
+      color: #ccc;
+    }
+
+    .btn {
+      background: #e8e8e8;
+      color: #0d0d0d;
+      border: none;
+      padding: 11px 28px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s;
+      width: 100%;
+    }
+    .btn:hover { background: #fff; }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-ghost {
+      background: transparent;
+      color: #555;
+      border: 1px solid #2a2a2a;
+      padding: 10px 28px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-ghost:hover { color: #aaa; border-color: #444; }
+
+    .err { color: #c0504d; font-size: 0.78rem; text-align: center; min-height: 1em; }
+
+    a { color: #555; font-size: 0.78rem; }
+    a:hover { color: #999; }
+
+    /* ── Main screen ── */
+    .main-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .top-logo {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    .top-right { display: flex; align-items: center; gap: 14px; }
+
+    .sync-badge {
+      font-size: 0.7rem;
+      color: #3a3a3a;
+      letter-spacing: 0.04em;
+    }
+    .sync-badge.ok { color: #3d6b3d; }
+    .sync-badge.err { color: #6b3d3d; }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #3a3a3a;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .icon-btn:hover { color: #888; }
+
+    /* Progress bar */
+    .life-bar { width: 100%; height: 2px; background: #1e1e1e; border-radius: 2px; margin-bottom: 36px; }
+    .life-bar-fill { height: 100%; background: #555; border-radius: 2px; transition: width 1s linear; }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .cd-unit { text-align: center; padding: 0 24px; }
+    .cd-unit + .cd-unit { border-left: 1px solid #1e1e1e; }
+
+    .cd-val {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 200;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cd-label {
+      font-size: 0.65rem;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 8px;
+    }
+
+    /* Grid section */
+    .section-label {
+      font-size: 0.65rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 14px;
+    }
+
+    .grid-scroll { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+
+    .life-grid { display: inline-flex; flex-direction: column; gap: 2px; }
+
+    .grid-row { display: flex; align-items: center; gap: 2px; }
+
+    .yr-lbl {
+      font-size: 8px;
+      color: #2e2e2e;
+      width: 22px;
+      text-align: right;
+      padding-right: 5px;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .wk {
+      width: 10px;
+      height: 10px;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+    .wk.past  { background: #3a3a3a; }
+    .wk.now   { background: #c8a96e; }
+    .wk.future { background: transparent; border: 1px solid #1e1e1e; }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 40px;
+    }
+
+    .stat {
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      padding: 18px 16px;
+      border-radius: 4px;
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 200;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-lbl {
+      font-size: 0.65rem;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH ── -->
+<div id="s-auth" class="center-screen">
+  <div class="logo">Die With Zero</div>
+  <p class="subtitle">Your time is finite. See it clearly.<br>Connect GitHub to save &amp; sync your settings.</p>
+
+  <div class="form-group">
+    <label class="form-label" for="pat">GitHub Personal Access Token</label>
+    <input type="password" id="pat" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+  </div>
+
+  <p class="subtitle">
+    Needs <strong style="color:#777">gist</strong> scope only &mdash;
+    <a href="https://github.com/settings/tokens/new?scopes=gist&description=die-with-zero" target="_blank" rel="noopener">create classic token →</a>
+  </p>
+
+  <button class="btn" id="connect-btn">Connect</button>
+  <div class="err" id="auth-err"></div>
+  <button class="btn-ghost" id="skip-btn">Skip — local only</button>
+</div>
+
+<!-- ── SETUP ── -->
+<div id="s-setup" class="center-screen hidden">
+  <div class="logo">Your Life</div>
+  <p class="subtitle">Set your details once. Change them anytime.</p>
+
+  <div class="form-group">
+    <label class="form-label" for="bday">Date of Birth</label>
+    <input type="date" id="bday">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Expected Lifespan</label>
+    <div class="range-val"><span id="ls-display">80</span> years</div>
+    <input type="range" id="ls" min="60" max="100" value="80">
+  </div>
+
+  <button class="btn" id="start-btn">Begin</button>
+  <div class="err" id="setup-err"></div>
+</div>
+
+<!-- ── MAIN ── -->
+<div id="s-main" class="hidden">
+  <div class="main-wrap">
+
+    <div class="top-bar">
+      <span class="top-logo">Die With Zero</span>
+      <div class="top-right">
+        <span class="sync-badge" id="sync-badge"></span>
+        <button class="icon-btn" id="settings-btn" title="Edit settings">⚙</button>
+      </div>
+    </div>
+
+    <div class="life-bar"><div class="life-bar-fill" id="life-bar-fill"></div></div>
+
+    <div class="countdown" id="countdown"></div>
+
+    <div class="section-label">Life in Weeks — each box is one week</div>
+    <div class="grid-scroll">
+      <div class="life-grid" id="life-grid"></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+  </div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+
+  // ── State ──
+  const S = {
+    pat: null,
+    gistId: null,
+    birthdate: null,
+    lifespan: 80,
+    local: false
+  };
+
+  // ── Boot ──
+  function boot() {
+    S.pat      = ls('dzw_pat');
+    S.gistId   = ls('dzw_gist_id');
+    S.local    = ls('dzw_local') === '1';
+    const saved = ls('dzw_cfg');
+    if (saved) { const c = JSON.parse(saved); S.birthdate = c.b; S.lifespan = c.l || 80; }
+
+    if (S.birthdate) {
+      showMain();
+      if (S.pat && S.gistId) pullGist();
+    } else if (S.pat || S.local) {
+      showSetup();
+    } else {
+      show('auth');
+    }
+  }
+
+  // ── Screen helpers ──
+  function show(name) {
+    ['auth','setup','main'].forEach(n => $('s-'+n).classList.add('hidden'));
+    $('s-'+name).classList.remove('hidden');
+  }
+
+  function showSetup() {
+    show('setup');
+    if (S.birthdate) $('bday').value = S.birthdate;
+    $('ls').value = S.lifespan;
+    $('ls-display').textContent = S.lifespan;
+  }
+
+  function showMain() {
+    show('main');
+    renderAll();
+  }
+
+  // ── Auth screen ──
+  $('connect-btn').onclick = async () => {
+    const pat = $('pat').value.trim();
+    if (!pat) return;
+    setBtn('connect-btn', 'Connecting…', true);
+    $('auth-err').textContent = '';
+    try {
+      const r = await gh(pat, '/user');
+      if (!r.ok) throw new Error('Invalid token — check scopes and try again.');
+      S.pat = pat; ls('dzw_pat', pat);
+
+      const gist = await findGist(pat);
+      if (gist) {
+        S.gistId = gist.id; ls('dzw_gist_id', gist.id);
+        applyGist(gist);
+        saveLocal();
+        showMain();
+      } else {
+        showSetup();
+      }
+    } catch(e) {
+      $('auth-err').textContent = e.message;
+    } finally {
+      setBtn('connect-btn', 'Connect', false);
+    }
+  };
+
+  $('skip-btn').onclick = () => { S.local = true; ls('dzw_local','1'); showSetup(); };
+
+  // ── Setup screen ──
+  $('ls').oninput = function() { $('ls-display').textContent = this.value; };
+
+  $('start-btn').onclick = async () => {
+    const b = $('bday').value;
+    if (!b) { $('setup-err').textContent = 'Please enter your date of birth.'; return; }
+    S.birthdate = b;
+    S.lifespan  = +$('ls').value;
+    saveLocal();
+    if (S.pat) { setBadge('syncing…'); await pushGist(); }
+    showMain();
+  };
+
+  $('settings-btn').onclick = showSetup;
+
+  // ── Gist API ──
+  const API = 'https://api.github.com';
+  const GF  = 'die-with-zero-settings.json';
+
+  function gh(pat, path, opts={}) {
+    return fetch(API + path, {
+      ...opts,
+      headers: { 'Authorization': `token ${pat}`, 'Content-Type': 'application/json', ...(opts.headers||{}) }
+    });
+  }
+
+  async function findGist(pat) {
+    for (let page = 1; ; page++) {
+      const r = await gh(pat, `/gists?per_page=100&page=${page}`);
+      if (!r.ok) return null;
+      const list = await r.json();
+      const hit  = list.find(g => g.files[GF]);
+      if (hit) {
+        const full = await gh(pat, `/gists/${hit.id}`);
+        return full.ok ? full.json() : null;
+      }
+      if (list.length < 100) return null;
+    }
+  }
+
+  function applyGist(gist) {
+    try {
+      const c = JSON.parse(gist.files[GF].content);
+      S.birthdate = c.b; S.lifespan = c.l || 80;
+    } catch(_) {}
+  }
+
+  async function pushGist() {
+    const body = { description: 'Die With Zero — settings', public: false,
+      files: { [GF]: { content: JSON.stringify({b: S.birthdate, l: S.lifespan}) } } };
+    const url    = S.gistId ? `/gists/${S.gistId}` : '/gists';
+    const method = S.gistId ? 'PATCH' : 'POST';
+    const r = await gh(S.pat, url, { method, body: JSON.stringify(body) });
+    if (r.ok) {
+      const g = await r.json();
+      S.gistId = g.id; ls('dzw_gist_id', g.id);
+      setBadge('synced ✓', 'ok');
+    } else {
+      setBadge('sync failed', 'err');
+    }
+  }
+
+  async function pullGist() {
+    try {
+      setBadge('syncing…');
+      const r = await gh(S.pat, `/gists/${S.gistId}`);
+      if (!r.ok) { setBadge(''); return; }
+      const g = await r.json();
+      applyGist(g); saveLocal(); renderAll();
+      setBadge('synced ✓', 'ok');
+    } catch(_) { setBadge(''); }
+  }
+
+  // ── localStorage helpers ──
+  function ls(k, v) {
+    if (v === undefined) return localStorage.getItem(k);
+    if (v === null) localStorage.removeItem(k);
+    else localStorage.setItem(k, v);
+  }
+
+  function saveLocal() {
+    ls('dzw_cfg', JSON.stringify({b: S.birthdate, l: S.lifespan}));
+  }
+
+  // ── UI helpers ──
+  function setBtn(id, txt, disabled) {
+    const b = $(id); b.textContent = txt; b.disabled = disabled;
+  }
+
+  function setBadge(txt, cls='') {
+    const el = $('sync-badge');
+    el.textContent = txt;
+    el.className = 'sync-badge' + (cls ? ' '+cls : '');
+  }
+
+  // ── Render ──
+  function renderAll() { renderCountdown(); renderGrid(); renderStats(); }
+
+  function renderCountdown() {
+    const now   = new Date();
+    const birth = new Date(S.birthdate);
+    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
+
+    const msLeft  = end - now;
+    const totalMs = end - birth;
+    const pct     = Math.min(100, Math.max(0, (now - birth) / totalMs * 100));
+    $('life-bar-fill').style.width = pct.toFixed(3) + '%';
+
+    if (msLeft <= 0) {
+      $('countdown').innerHTML = '<div class="cd-unit"><div class="cd-val" style="font-size:1.2rem">Every day beyond your estimate is a gift.</div></div>';
+      return;
+    }
+
+    const totalDays = msLeft / 864e5;
+    const yrs  = Math.floor(totalDays / 365.25);
+    const mos  = Math.floor((totalDays % 365.25) / 30.44);
+    const wks  = Math.floor((totalDays % 30.44) / 7);
+    const days = Math.floor(totalDays % 7);
+
+    $('countdown').innerHTML = [
+      [yrs,  'Years'],
+      [mos,  'Months'],
+      [wks,  'Weeks'],
+      [days, 'Days']
+    ].map(([v, l]) => `
+      <div class="cd-unit">
+        <div class="cd-val">${v.toLocaleString()}</div>
+        <div class="cd-label">${l}</div>
+      </div>`).join('');
+  }
+
+  function renderGrid() {
+    const birth = new Date(S.birthdate);
+    const now   = new Date();
+    const msPerWeek  = 6048e5;
+    const weeksLived = Math.floor((now - birth) / msPerWeek);
+    const grid = $('life-grid');
+    grid.innerHTML = '';
+
+    for (let y = 0; y < S.lifespan; y++) {
+      const row = document.createElement('div');
+      row.className = 'grid-row';
+
+      const lbl = document.createElement('div');
+      lbl.className = 'yr-lbl';
+      if (y % 5 === 0) lbl.textContent = y;
+      row.appendChild(lbl);
+
+      for (let w = 0; w < 52; w++) {
+        const idx = y * 52 + w;
+        const box = document.createElement('div');
+        box.className = 'wk ' + (idx < weeksLived ? 'past' : idx === weeksLived ? 'now' : 'future');
+        box.title = `Age ${y}, week ${w + 1}`;
+        row.appendChild(box);
+      }
+      grid.appendChild(row);
+    }
+  }
+
+  function renderStats() {
+    const now   = new Date();
+    const birth = new Date(S.birthdate);
+    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
+    const msLeft   = Math.max(0, end - now);
+    const daysLeft = msLeft / 864e5;
+    const totalMs  = end - birth;
+    const pct      = Math.min(100, (now - birth) / totalMs * 100);
+
+    const fmt = n => Math.floor(n).toLocaleString();
+
+    $('stats').innerHTML = [
+      [pct.toFixed(1) + '%', 'Life Lived'],
+      [fmt(daysLeft / 365.25), 'Summers Left'],
+      [fmt(daysLeft / 7), 'Weekends Left'],
+      [fmt(daysLeft / 29.53), 'Full Moons Left'],
+      [fmt(daysLeft), 'Days Remaining'],
+      [fmt(daysLeft * 24), 'Hours Remaining'],
+    ].map(([v, l]) => `
+      <div class="stat">
+        <div class="stat-val">${v}</div>
+        <div class="stat-lbl">${l}</div>
+      </div>`).join('');
+  }
+
+  // ── Live countdown tick ──
+  setInterval(() => {
+    if (!$('s-main').classList.contains('hidden')) renderCountdown();
+  }, 1000);
+
+  boot();
+</script>
+</body>
+</html>
