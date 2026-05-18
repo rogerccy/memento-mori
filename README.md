@@ -2,7 +2,7 @@
 
 A life countdown web app inspired by Bill Perkins' *Die With Zero*. See exactly how much time you have left — not as an abstract number, but as a grid of every week of your life.
 
-**Live:** https://rogerccy.github.io/die-with-zero/
+**Live:** https://rogerccy.github.io/memento-mori/
 
 ## Features
 
