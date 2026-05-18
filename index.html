@@ -137,6 +137,17 @@
 
     .top-right { display: flex; align-items: center; gap: 14px; }
 
+    .home-link {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .home-link:hover { color: var(--accent); }
+
     .sync-badge {
       font-size: 0.7rem;
       color: #3a3a3a;
@@ -301,6 +312,7 @@
   <div class="main-wrap">
 
     <div class="top-bar">
+      <a class="home-link" href="https://rogerccy.github.io">&#8592; Home</a>
       <span class="top-logo">Die With Zero</span>
       <div class="top-right">
         <span class="sync-badge" id="sync-badge"></span>
