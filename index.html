@@ -142,11 +142,11 @@
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #777;
       text-decoration: none;
       transition: color 0.2s;
     }
-    .home-link:hover { color: var(--accent); }
+    .home-link:hover { color: #c8a96e; }
 
     .sync-badge {
       font-size: 0.7rem;
@@ -263,6 +263,56 @@
       letter-spacing: 0.1em;
       margin-top: 5px;
     }
+
+    /* ── Daily quote ── */
+    .quote-card {
+      border-left: 2px solid #c8a96e;
+      padding: 14px 20px;
+      margin-bottom: 36px;
+      background: #111;
+      border-radius: 0 4px 4px 0;
+    }
+    .quote-text {
+      font-size: 0.88rem;
+      color: #aaa;
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 7px;
+    }
+    .quote-author {
+      font-size: 0.65rem;
+      color: #555;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Free time section ── */
+    .ft-section { margin-top: 40px; }
+    .ft-controls {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .ft-control { display: flex; flex-direction: column; gap: 6px; }
+    .ft-control label {
+      font-size: 0.62rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .ft-control input[type="number"] {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      color: #e8e8e8;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      width: 88px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .ft-control input[type="number"]:focus { border-color: #555; }
   </style>
 </head>
 <body>
@@ -320,6 +370,8 @@
       </div>
     </div>
 
+    <div id="daily-quote" class="quote-card"></div>
+
     <div class="life-bar"><div class="life-bar-fill" id="life-bar-fill"></div></div>
 
     <div class="countdown" id="countdown"></div>
@@ -331,11 +383,63 @@
 
     <div class="stats" id="stats"></div>
 
+    <div class="ft-section">
+      <div class="section-label">Free Time Remaining</div>
+      <div class="ft-controls">
+        <div class="ft-control">
+          <label for="ft-sleep">Sleep hrs/day</label>
+          <input type="number" id="ft-sleep" min="4" max="12" value="8">
+        </div>
+        <div class="ft-control">
+          <label for="ft-work">Work hrs/day</label>
+          <input type="number" id="ft-work" min="0" max="16" value="8">
+        </div>
+        <div class="ft-control">
+          <label for="ft-wdays">Work days/week</label>
+          <input type="number" id="ft-wdays" min="0" max="7" value="5">
+        </div>
+        <div class="ft-control">
+          <label for="ft-retire">Retire age</label>
+          <input type="number" id="ft-retire" min="40" max="90" value="65">
+        </div>
+      </div>
+      <div class="stats" id="ft-stats"></div>
+    </div>
+
   </div>
 </div>
 
 <script>
   const $ = id => document.getElementById(id);
+
+  // ── Quotes ──
+  const QUOTES = [
+    { text: "It is not that we have a short time to live, but that we waste a great deal of it.", author: "Seneca" },
+    { text: "You could leave life right now. Let that determine what you do and say and think.", author: "Marcus Aurelius" },
+    { text: "Think of yourself as dead. You have lived your life. Now take what's left and live it properly.", author: "Marcus Aurelius" },
+    { text: "Begin at once to live, and count each separate day as a separate life.", author: "Seneca" },
+    { text: "Death smiles at us all; all we can do is smile back.", author: "Marcus Aurelius" },
+    { text: "How long are you going to wait before you demand the best for yourself?", author: "Epictetus" },
+    { text: "He who fears death will never do anything worthy of a man who is alive.", author: "Seneca" },
+    { text: "The whole future lies in uncertainty: live immediately.", author: "Seneca" },
+    { text: "Do not act as if you had ten thousand years to live.", author: "Marcus Aurelius" },
+    { text: "The greatest obstacle to living is expectancy, which hangs upon tomorrow and loses today.", author: "Seneca" },
+    { text: "The trouble is, you think you have time.", author: "Buddha" },
+    { text: "Waste no more time arguing about what a good man should be. Be one.", author: "Marcus Aurelius" },
+    { text: "Each day is a little life: every waking and rising a little birth, every going to rest and sleep a little death.", author: "Arthur Schopenhauer" },
+    { text: "In the end, it's not the years in your life that count. It's the life in your years.", author: "Abraham Lincoln" },
+    { text: "The fear of death follows from the fear of life. A man who lives fully is prepared to die at any time.", author: "Mark Twain" },
+    { text: "We suffer more in imagination than in reality.", author: "Seneca" },
+    { text: "A day without laughter is a day wasted.", author: "Charlie Chaplin" },
+    { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+    { text: "Perfection of character is this: to live each day as if it were your last, without frenzy, without apathy, without pretense.", author: "Marcus Aurelius" },
+    { text: "It is not death that a man should fear, but he should fear never beginning to live.", author: "Marcus Aurelius" },
+    { text: "Memento mori — use it not to make you sad, but to make you bold.", author: "Stoic maxim" },
+    { text: "Time is a river of vanishing moments; its current is swift.", author: "Marcus Aurelius" },
+    { text: "You have power over your mind, not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
+    { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
+    { text: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.", author: "Marcus Aurelius" },
+  ];
 
   // ── State ──
   const S = {
@@ -343,7 +447,11 @@
     gistId: null,
     birthdate: null,
     lifespan: 80,
-    local: false
+    local: false,
+    sleepHrs: 8,
+    workHrs: 8,
+    workDays: 5,
+    retireAge: 65,
   };
 
   // ── Boot ──
@@ -352,7 +460,12 @@
     S.gistId   = ls('dzw_gist_id');
     S.local    = ls('dzw_local') === '1';
     const saved = ls('dzw_cfg');
-    if (saved) { const c = JSON.parse(saved); S.birthdate = c.b; S.lifespan = c.l || 80; }
+    if (saved) {
+      const c = JSON.parse(saved);
+      S.birthdate = c.b; S.lifespan = c.l || 80;
+      S.sleepHrs  = c.sh ?? 8; S.workHrs = c.wh ?? 8;
+      S.workDays  = c.wd ?? 5; S.retireAge = c.ra ?? 65;
+    }
 
     if (S.birthdate) {
       showMain();
@@ -455,12 +568,14 @@
     try {
       const c = JSON.parse(gist.files[GF].content);
       S.birthdate = c.b; S.lifespan = c.l || 80;
+      S.sleepHrs  = c.sh ?? 8; S.workHrs = c.wh ?? 8;
+      S.workDays  = c.wd ?? 5; S.retireAge = c.ra ?? 65;
     } catch(_) {}
   }
 
   async function pushGist() {
     const body = { description: 'Die With Zero — settings', public: false,
-      files: { [GF]: { content: JSON.stringify({b: S.birthdate, l: S.lifespan}) } } };
+      files: { [GF]: { content: JSON.stringify({b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge}) } } };
     const url    = S.gistId ? `/gists/${S.gistId}` : '/gists';
     const method = S.gistId ? 'PATCH' : 'POST';
     const r = await gh(S.pat, url, { method, body: JSON.stringify(body) });
@@ -492,7 +607,7 @@
   }
 
   function saveLocal() {
-    ls('dzw_cfg', JSON.stringify({b: S.birthdate, l: S.lifespan}));
+    ls('dzw_cfg', JSON.stringify({b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge}));
   }
 
   // ── UI helpers ──
@@ -507,7 +622,49 @@
   }
 
   // ── Render ──
-  function renderAll() { renderCountdown(); renderGrid(); renderStats(); }
+  function renderAll() { renderQuote(); renderCountdown(); renderGrid(); renderStats(); renderFreeTime(); }
+
+  function renderQuote() {
+    const now = new Date();
+    const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+    const q = QUOTES[dayOfYear % QUOTES.length];
+    $('daily-quote').innerHTML = `<div class="quote-text">"${q.text}"</div><div class="quote-author">— ${q.author}</div>`;
+  }
+
+  function renderFreeTime() {
+    const now   = new Date();
+    const birth = new Date(S.birthdate);
+    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
+    const daysLeft = Math.max(0, (end - now) / 864e5);
+
+    const retire = new Date(birth); retire.setFullYear(retire.getFullYear() + S.retireAge);
+    const workDaysLeft = Math.max(0, (Math.min(retire, end) - now) / 864e5) * (S.workDays / 7);
+
+    const totalHrs = daysLeft * 24;
+    const sleepHrs = daysLeft * S.sleepHrs;
+    const workHrs  = workDaysLeft * S.workHrs;
+    const freeHrs  = Math.max(0, totalHrs - sleepHrs - workHrs);
+    const freeYrs  = freeHrs / (365.25 * 24);
+    const freePct  = totalHrs > 0 ? (freeHrs / totalHrs * 100) : 0;
+
+    const fmt = n => Math.floor(n).toLocaleString();
+
+    $('ft-stats').innerHTML = [
+      [fmt(freeHrs),        'Free Hours Left'],
+      [fmt(freeYrs),        'Free Years Left'],
+      [freePct.toFixed(1) + '%', 'Of Remaining Life'],
+      [fmt(freeHrs / 24 / 7), 'Free Weekends Left'],
+    ].map(([v, l]) => `
+      <div class="stat">
+        <div class="stat-val">${v}</div>
+        <div class="stat-lbl">${l}</div>
+      </div>`).join('');
+
+    $('ft-sleep').value  = S.sleepHrs;
+    $('ft-work').value   = S.workHrs;
+    $('ft-wdays').value  = S.workDays;
+    $('ft-retire').value = S.retireAge;
+  }
 
   function renderCountdown() {
     const now   = new Date();
@@ -594,6 +751,18 @@
         <div class="stat-lbl">${l}</div>
       </div>`).join('');
   }
+
+  // ── Free time input listeners ──
+  function ftChanged() {
+    S.sleepHrs  = Math.max(4,  Math.min(12, +$('ft-sleep').value  || 8));
+    S.workHrs   = Math.max(0,  Math.min(16, +$('ft-work').value   || 8));
+    S.workDays  = Math.max(0,  Math.min(7,  +$('ft-wdays').value  || 5));
+    S.retireAge = Math.max(40, Math.min(90, +$('ft-retire').value || 65));
+    renderFreeTime();
+    saveLocal();
+    if (S.pat) pushGist();
+  }
+  ['ft-sleep','ft-work','ft-wdays','ft-retire'].forEach(id => $(id).addEventListener('change', ftChanged));
 
   // ── Live countdown tick ──
   setInterval(() => {
