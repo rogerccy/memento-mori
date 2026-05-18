@@ -168,9 +168,8 @@
     }
     .icon-btn:hover { color: #888; }
 
-    /* Progress bar */
-    .life-bar { width: 100%; height: 2px; background: #1e1e1e; border-radius: 2px; margin-bottom: 36px; }
-    .life-bar-fill { height: 100%; background: #555; border-radius: 2px; transition: width 1s linear; }
+    /* Life clock */
+    .life-clock { display: flex; justify-content: center; margin-bottom: 36px; }
 
     /* Countdown */
     .countdown {
@@ -372,7 +371,7 @@
 
     <div id="daily-quote" class="quote-card"></div>
 
-    <div class="life-bar"><div class="life-bar-fill" id="life-bar-fill"></div></div>
+    <div class="life-clock" id="life-clock"></div>
 
     <div class="countdown" id="countdown"></div>
 
@@ -622,7 +621,38 @@
   }
 
   // ── Render ──
-  function renderAll() { renderQuote(); renderCountdown(); renderGrid(); renderStats(); renderFreeTime(); }
+  function renderAll() { renderQuote(); renderLifeClock(); renderCountdown(); renderGrid(); renderStats(); renderFreeTime(); }
+
+  function renderLifeClock() {
+    const now   = new Date();
+    const birth = new Date(S.birthdate);
+    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
+
+    const pct = Math.min(100, Math.max(0, (now - birth) / (end - birth) * 100));
+
+    let age = now.getFullYear() - birth.getFullYear();
+    if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
+
+    const R = 80, cx = 100, cy = 100;
+    const circ = 2 * Math.PI * R;
+    const lived = pct / 100 * circ;
+    const angle = (pct / 100 * 360 - 90) * Math.PI / 180;
+    const dx = (cx + R * Math.cos(angle)).toFixed(2);
+    const dy = (cy + R * Math.sin(angle)).toFixed(2);
+
+    $('life-clock').innerHTML = `
+      <svg viewBox="0 0 200 200" width="200" height="200">
+        <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1a1a1a" stroke-width="12"/>
+        <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#2e2e2e" stroke-width="12"
+          stroke-dasharray="${lived.toFixed(2)} ${circ.toFixed(2)}"
+          transform="rotate(-90 ${cx} ${cy})"/>
+        <circle cx="${dx}" cy="${dy}" r="7" fill="#c8a96e"/>
+        <circle cx="${dx}" cy="${dy}" r="13" fill="none" stroke="#c8a96e" stroke-width="1" opacity="0.3"/>
+        <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#e8e8e8" font-size="34" font-weight="200" font-family="-apple-system,sans-serif">${age}</text>
+        <text x="${cx}" y="${cy + 13}" text-anchor="middle" fill="#555" font-size="10" font-family="-apple-system,sans-serif" letter-spacing="2">YEARS OLD</text>
+        <text x="${cx}" y="${cy + 32}" text-anchor="middle" fill="#c8a96e" font-size="11" font-family="-apple-system,sans-serif">${pct.toFixed(1)}% lived</text>
+      </svg>`;
+  }
 
   function renderQuote() {
     const now = new Date();
@@ -673,8 +703,6 @@
 
     const msLeft  = end - now;
     const totalMs = end - birth;
-    const pct     = Math.min(100, Math.max(0, (now - birth) / totalMs * 100));
-    $('life-bar-fill').style.width = pct.toFixed(3) + '%';
 
     if (msLeft <= 0) {
       $('countdown').innerHTML = '<div class="cd-unit"><div class="cd-val" style="font-size:1.2rem">Every day beyond your estimate is a gift.</div></div>';
@@ -766,7 +794,7 @@
 
   // ── Live countdown tick ──
   setInterval(() => {
-    if (!$('s-main').classList.contains('hidden')) renderCountdown();
+    if (!$('s-main').classList.contains('hidden')) { renderLifeClock(); renderCountdown(); }
   }, 1000);
 
   boot();
