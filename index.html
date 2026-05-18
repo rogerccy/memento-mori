@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Die With Zero</title>
+  <title>Memento Mori</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -319,7 +319,7 @@
 
 <!-- ── AUTH ── -->
 <div id="s-auth" class="center-screen">
-  <div class="logo">Die With Zero</div>
+  <div class="logo">Memento Mori</div>
   <p class="subtitle">Your time is finite. See it clearly.<br>Connect GitHub to save &amp; sync your settings.</p>
 
   <div class="form-group">
@@ -363,7 +363,7 @@
 
     <div class="top-bar">
       <a class="home-link" href="https://rogerccy.github.io">&#8592; Home</a>
-      <span class="top-logo">Die With Zero</span>
+      <span class="top-logo">Memento Mori</span>
       <div class="top-right">
         <span class="sync-badge" id="sync-badge"></span>
         <button class="icon-btn" id="settings-btn" title="Edit settings">⚙</button>
@@ -574,7 +574,7 @@
   }
 
   async function pushGist() {
-    const body = { description: 'Die With Zero — settings', public: false,
+    const body = { description: 'Memento Mori — settings', public: false,
       files: { [GF]: { content: JSON.stringify({b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge}) } } };
     const url    = S.gistId ? `/gists/${S.gistId}` : '/gists';
     const method = S.gistId ? 'PATCH' : 'POST';
