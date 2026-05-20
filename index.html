@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memento Mori</title>
+  <title>Life Clock</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -323,7 +323,7 @@
 
 <!-- ── 驗證畫面 / AUTH ── -->
 <div id="s-auth" class="center-screen">
-  <div class="logo">Memento Mori</div>
+  <div class="logo">Life Clock</div>
   <p class="subtitle" data-i18n="authSubtitle"></p>
 
   <div class="form-group">
@@ -367,7 +367,7 @@
 
     <div class="top-bar">
       <a class="home-link" href="https://rogerccy.github.io" id="home-link-text">&#8592; Home</a>
-      <span class="top-logo">Memento Mori</span>
+      <span class="top-logo">Life Clock</span>
       <div class="top-right">
         <span class="sync-badge" id="sync-badge"></span>
         <button class="icon-btn" id="settings-btn" title="Edit settings">⚙</button>
@@ -430,7 +430,7 @@
       // 驗證畫面 / Auth screen
       authSubtitle:   'Remember you will die — and live accordingly.\nConnect GitHub to save & sync your settings.',
       patLabel:       'GitHub Personal Access Token',
-      authScopeNote:  'Needs <strong style="color:#777">gist</strong> scope only — <a href="https://github.com/settings/tokens/new?scopes=gist&description=memento-mori" target="_blank" rel="noopener">create classic token →</a>',
+      authScopeNote:  'Needs <strong style="color:#777">gist</strong> scope only — <a href="https://github.com/settings/tokens/new?scopes=gist&description=life-clock" target="_blank" rel="noopener">create classic token →</a>',
       connectBtn:     'Connect',
       skipBtn:        'Skip — local only',
       connectingBtn:  'Connecting…',
@@ -482,7 +482,7 @@
       // 驗證畫面
       authSubtitle:   '記住你終將死去——並以此為生。\n連結 GitHub 以儲存並同步你的設定。',
       patLabel:       'GitHub 個人存取權杖',
-      authScopeNote:  '僅需 <strong style="color:#777">gist</strong> 權限 — <a href="https://github.com/settings/tokens/new?scopes=gist&description=memento-mori" target="_blank" rel="noopener">建立 classic token →</a>',
+      authScopeNote:  '僅需 <strong style="color:#777">gist</strong> 權限 — <a href="https://github.com/settings/tokens/new?scopes=gist&description=life-clock" target="_blank" rel="noopener">建立 classic token →</a>',
       connectBtn:     '連結',
       skipBtn:        '略過——僅本地儲存',
       connectingBtn:  '連結中…',
@@ -762,7 +762,7 @@
 
   async function pushGist() {
     const body = {
-      description: 'Memento Mori — settings',
+      description: 'Life Clock — settings',
       public: false,
       files: { [GF]: { content: JSON.stringify({ b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge }) } }
     };
