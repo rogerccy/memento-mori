@@ -16,7 +16,33 @@
 
     .hidden { display: none !important; }
 
-    /* ── Center screens (auth / setup) ── */
+    /* ── 語言切換 / Language toggle ── */
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      border: 1px solid #2a2a2a;
+      border-radius: 4px;
+      overflow: hidden;
+      z-index: 100;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+    }
+    .lang-btn + .lang-btn { border-left: 1px solid #2a2a2a; }
+    .lang-btn.active { background: #1e1e1e; color: #c8a96e; }
+    .lang-btn:hover:not(.active) { color: #888; }
+
+    /* ── 中間畫面 (驗證 / 設定) / Center screens ── */
     .center-screen {
       display: flex;
       flex-direction: column;
@@ -113,7 +139,7 @@
     a { color: #777; font-size: 0.78rem; }
     a:hover { color: #999; }
 
-    /* ── Main screen ── */
+    /* ── 主畫面 / Main screen ── */
     .main-wrap {
       max-width: 860px;
       margin: 0 auto;
@@ -153,7 +179,7 @@
       color: #3a3a3a;
       letter-spacing: 0.04em;
     }
-    .sync-badge.ok { color: #3d6b3d; }
+    .sync-badge.ok  { color: #3d6b3d; }
     .sync-badge.err { color: #6b3d3d; }
 
     .icon-btn {
@@ -168,10 +194,10 @@
     }
     .icon-btn:hover { color: #888; }
 
-    /* Life clock */
+    /* ── 生命時鐘 / Life clock ── */
     .life-clock { display: flex; justify-content: center; margin-bottom: 36px; }
 
-    /* Countdown */
+    /* ── 倒數計時 / Countdown ── */
     .countdown {
       display: flex;
       gap: 0;
@@ -199,7 +225,7 @@
       margin-top: 8px;
     }
 
-    /* Grid section */
+    /* ── 區塊標題 / Section label ── */
     .section-label {
       font-size: 0.65rem;
       color: #555;
@@ -209,10 +235,8 @@
     }
 
     .grid-scroll { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
-
     .life-grid { display: inline-flex; flex-direction: column; gap: 2px; }
-
-    .grid-row { display: flex; align-items: center; gap: 2px; }
+    .grid-row  { display: flex; align-items: center; gap: 2px; }
 
     .yr-lbl {
       font-size: 8px;
@@ -224,17 +248,12 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .wk {
-      width: 10px;
-      height: 10px;
-      border-radius: 1px;
-      flex-shrink: 0;
-    }
-    .wk.past  { background: #3a3a3a; }
-    .wk.now   { background: #c8a96e; }
+    .wk { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+    .wk.past   { background: #3a3a3a; }
+    .wk.now    { background: #c8a96e; }
     .wk.future { background: transparent; border: 1px solid #1e1e1e; }
 
-    /* Stats */
+    /* ── 統計卡片 / Stats ── */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -249,11 +268,7 @@
       border-radius: 4px;
     }
 
-    .stat-val {
-      font-size: 1.4rem;
-      font-weight: 200;
-      font-variant-numeric: tabular-nums;
-    }
+    .stat-val { font-size: 1.4rem; font-weight: 200; font-variant-numeric: tabular-nums; }
 
     .stat-lbl {
       font-size: 0.65rem;
@@ -263,7 +278,7 @@
       margin-top: 5px;
     }
 
-    /* ── Daily quote ── */
+    /* ── 每日名言 / Daily quote ── */
     .quote-card {
       border-left: 2px solid #c8a96e;
       padding: 14px 20px;
@@ -271,29 +286,13 @@
       background: #111;
       border-radius: 0 4px 4px 0;
     }
-    .quote-text {
-      font-size: 0.88rem;
-      color: #aaa;
-      font-style: italic;
-      line-height: 1.7;
-      margin-bottom: 7px;
-    }
-    .quote-author {
-      font-size: 0.65rem;
-      color: #555;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+    .quote-text   { font-size: 0.88rem; color: #aaa; font-style: italic; line-height: 1.7; margin-bottom: 7px; }
+    .quote-author { font-size: 0.65rem; color: #555; letter-spacing: 0.08em; text-transform: uppercase; }
 
-    /* ── Free time section ── */
+    /* ── 自由時間 / Free time ── */
     .ft-section { margin-top: 40px; }
-    .ft-controls {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin: 16px 0;
-    }
-    .ft-control { display: flex; flex-direction: column; gap: 6px; }
+    .ft-controls { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0; }
+    .ft-control  { display: flex; flex-direction: column; gap: 6px; }
     .ft-control label {
       font-size: 0.62rem;
       color: #555;
@@ -316,52 +315,58 @@
 </head>
 <body>
 
-<!-- ── AUTH ── -->
+<!-- ── 語言切換按鈕 / Language toggle (fixed, always visible) ── -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn"        id="lang-zh" onclick="setLang('zh')">中文</button>
+</div>
+
+<!-- ── 驗證畫面 / AUTH ── -->
 <div id="s-auth" class="center-screen">
   <div class="logo">Memento Mori</div>
-  <p class="subtitle">Remember you will die — and live accordingly.<br>Connect GitHub to save &amp; sync your settings.</p>
+  <p class="subtitle" data-i18n="authSubtitle"></p>
 
   <div class="form-group">
-    <label class="form-label" for="pat">GitHub Personal Access Token</label>
+    <label class="form-label" for="pat" data-i18n="patLabel"></label>
     <input type="password" id="pat" placeholder="ghp_…" autocomplete="off" spellcheck="false">
   </div>
 
   <p class="subtitle">
-    Needs <strong style="color:#777">gist</strong> scope only &mdash;
-    <a href="https://github.com/settings/tokens/new?scopes=gist&description=die-with-zero" target="_blank" rel="noopener">create classic token →</a>
+    <!-- "Needs gist scope" note rendered by applyLang() -->
+    <span id="auth-scope-note"></span>
   </p>
 
-  <button class="btn" id="connect-btn">Connect</button>
-  <div class="err" id="auth-err"></div>
-  <button class="btn-ghost" id="skip-btn">Skip — local only</button>
+  <button class="btn"       id="connect-btn" data-i18n="connectBtn"></button>
+  <div class="err"          id="auth-err"></div>
+  <button class="btn-ghost" id="skip-btn"    data-i18n="skipBtn"></button>
 </div>
 
-<!-- ── SETUP ── -->
+<!-- ── 設定畫面 / SETUP ── -->
 <div id="s-setup" class="center-screen hidden">
-  <div class="logo">Your Life</div>
-  <p class="subtitle">Set your details once. Change them anytime.</p>
+  <div class="logo" data-i18n="setupTitle"></div>
+  <p class="subtitle" data-i18n="setupSubtitle"></p>
 
   <div class="form-group">
-    <label class="form-label" for="bday">Date of Birth</label>
+    <label class="form-label" for="bday" data-i18n="bdayLabel"></label>
     <input type="date" id="bday">
   </div>
 
   <div class="form-group">
-    <label class="form-label">Expected Lifespan</label>
-    <div class="range-val"><span id="ls-display">80</span> years</div>
+    <label class="form-label" data-i18n="lifespanLabel"></label>
+    <div class="range-val"><span id="ls-display">80</span> <span data-i18n="lifespanUnit"></span></div>
     <input type="range" id="ls" min="60" max="100" value="80">
   </div>
 
-  <button class="btn" id="start-btn">Begin</button>
-  <div class="err" id="setup-err"></div>
+  <button class="btn" id="start-btn" data-i18n="beginBtn"></button>
+  <div class="err"    id="setup-err"></div>
 </div>
 
-<!-- ── MAIN ── -->
+<!-- ── 主畫面 / MAIN ── -->
 <div id="s-main" class="hidden">
   <div class="main-wrap">
 
     <div class="top-bar">
-      <a class="home-link" href="https://rogerccy.github.io">&#8592; Home</a>
+      <a class="home-link" href="https://rogerccy.github.io" id="home-link-text">&#8592; Home</a>
       <span class="top-logo">Memento Mori</span>
       <div class="top-right">
         <span class="sync-badge" id="sync-badge"></span>
@@ -369,36 +374,42 @@
       </div>
     </div>
 
+    <!-- 每日名言 / Daily quote -->
     <div id="daily-quote" class="quote-card"></div>
 
+    <!-- 生命時鐘 / Life clock -->
     <div class="life-clock" id="life-clock"></div>
 
+    <!-- 倒數計時 / Countdown -->
     <div class="countdown" id="countdown"></div>
 
-    <div class="section-label">Life in Weeks — each box is one week</div>
+    <!-- 人生週曆 / Life-in-weeks grid -->
+    <div class="section-label" id="grid-label"></div>
     <div class="grid-scroll">
       <div class="life-grid" id="life-grid"></div>
     </div>
 
+    <!-- 統計卡片 / Stats -->
     <div class="stats" id="stats"></div>
 
+    <!-- 自由時間 / Free time -->
     <div class="ft-section">
-      <div class="section-label">Free Time Remaining</div>
+      <div class="section-label" data-i18n="ftSection"></div>
       <div class="ft-controls">
         <div class="ft-control">
-          <label for="ft-sleep">Sleep hrs/day</label>
+          <label for="ft-sleep" data-i18n="ftSleep"></label>
           <input type="number" id="ft-sleep" min="4" max="12" value="8">
         </div>
         <div class="ft-control">
-          <label for="ft-work">Work hrs/day</label>
+          <label for="ft-work" data-i18n="ftWork"></label>
           <input type="number" id="ft-work" min="0" max="16" value="8">
         </div>
         <div class="ft-control">
-          <label for="ft-wdays">Work days/week</label>
+          <label for="ft-wdays" data-i18n="ftWdays"></label>
           <input type="number" id="ft-wdays" min="0" max="7" value="5">
         </div>
         <div class="ft-control">
-          <label for="ft-retire">Retire age</label>
+          <label for="ft-retire" data-i18n="ftRetire"></label>
           <input type="number" id="ft-retire" min="40" max="90" value="65">
         </div>
       </div>
@@ -411,60 +422,226 @@
 <script>
   const $ = id => document.getElementById(id);
 
-  // ── Quotes ──
-  const QUOTES = [
-    { text: "It is not that we have a short time to live, but that we waste a great deal of it.", author: "Seneca" },
-    { text: "You could leave life right now. Let that determine what you do and say and think.", author: "Marcus Aurelius" },
-    { text: "Think of yourself as dead. You have lived your life. Now take what's left and live it properly.", author: "Marcus Aurelius" },
-    { text: "Begin at once to live, and count each separate day as a separate life.", author: "Seneca" },
-    { text: "Death smiles at us all; all we can do is smile back.", author: "Marcus Aurelius" },
-    { text: "How long are you going to wait before you demand the best for yourself?", author: "Epictetus" },
-    { text: "He who fears death will never do anything worthy of a man who is alive.", author: "Seneca" },
-    { text: "The whole future lies in uncertainty: live immediately.", author: "Seneca" },
-    { text: "Do not act as if you had ten thousand years to live.", author: "Marcus Aurelius" },
-    { text: "The greatest obstacle to living is expectancy, which hangs upon tomorrow and loses today.", author: "Seneca" },
-    { text: "The trouble is, you think you have time.", author: "Buddha" },
-    { text: "Waste no more time arguing about what a good man should be. Be one.", author: "Marcus Aurelius" },
-    { text: "Each day is a little life: every waking and rising a little birth, every going to rest and sleep a little death.", author: "Arthur Schopenhauer" },
-    { text: "In the end, it's not the years in your life that count. It's the life in your years.", author: "Abraham Lincoln" },
-    { text: "The fear of death follows from the fear of life. A man who lives fully is prepared to die at any time.", author: "Mark Twain" },
-    { text: "We suffer more in imagination than in reality.", author: "Seneca" },
-    { text: "A day without laughter is a day wasted.", author: "Charlie Chaplin" },
-    { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
-    { text: "Perfection of character is this: to live each day as if it were your last, without frenzy, without apathy, without pretense.", author: "Marcus Aurelius" },
-    { text: "It is not death that a man should fear, but he should fear never beginning to live.", author: "Marcus Aurelius" },
-    { text: "Memento mori — use it not to make you sad, but to make you bold.", author: "Stoic maxim" },
-    { text: "Time is a river of vanishing moments; its current is swift.", author: "Marcus Aurelius" },
-    { text: "You have power over your mind, not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
-    { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
-    { text: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.", author: "Marcus Aurelius" },
-  ];
-
-  // ── State ──
-  const S = {
-    pat: null,
-    gistId: null,
-    birthdate: null,
-    lifespan: 80,
-    local: false,
-    sleepHrs: 8,
-    workHrs: 8,
-    workDays: 5,
-    retireAge: 65,
+  // ────────────────────────────────────────────────
+  // 多語言翻譯 / Translations
+  // ────────────────────────────────────────────────
+  const LANG = {
+    en: {
+      // 驗證畫面 / Auth screen
+      authSubtitle:   'Remember you will die — and live accordingly.\nConnect GitHub to save & sync your settings.',
+      patLabel:       'GitHub Personal Access Token',
+      authScopeNote:  'Needs <strong style="color:#777">gist</strong> scope only — <a href="https://github.com/settings/tokens/new?scopes=gist&description=memento-mori" target="_blank" rel="noopener">create classic token →</a>',
+      connectBtn:     'Connect',
+      skipBtn:        'Skip — local only',
+      connectingBtn:  'Connecting…',
+      invalidToken:   'Invalid token — check scopes and try again.',
+      // 設定畫面 / Setup screen
+      setupTitle:     'Your Life',
+      setupSubtitle:  'Set your details once. Change them anytime.',
+      bdayLabel:      'Date of Birth',
+      lifespanLabel:  'Expected Lifespan',
+      lifespanUnit:   'years',
+      beginBtn:       'Begin',
+      bdayRequired:   'Please enter your date of birth.',
+      // 主畫面頂部 / Main top bar
+      homeLink:       '← Home',
+      // 時鐘 / Clock
+      yearsOld:       'YEARS OLD',
+      pctLived:       '% lived',
+      // 倒數計時 / Countdown
+      cdYears:  'Years',
+      cdMonths: 'Months',
+      cdWeeks:  'Weeks',
+      cdDays:   'Days',
+      giftMsg:  'Every day beyond your estimate is a gift.',
+      // 網格 / Grid
+      gridLabel: 'Life in Weeks — each box is one week',
+      // 統計 / Stats
+      statLifeLived: 'Life Lived',
+      statSummers:   'Summers Left',
+      statWeekends:  'Weekends Left',
+      statMoons:     'Full Moons Left',
+      statDays:      'Days Remaining',
+      statHours:     'Hours Remaining',
+      // 自由時間 / Free time
+      ftSection:      'Free Time Remaining',
+      ftSleep:        'Sleep hrs/day',
+      ftWork:         'Work hrs/day',
+      ftWdays:        'Work days/week',
+      ftRetire:       'Retire age',
+      ftFreeHours:    'Free Hours Left',
+      ftFreeYears:    'Free Years Left',
+      ftFreePct:      'Of Remaining Life',
+      ftFreeWeekends: 'Free Weekends Left',
+      // 同步狀態 / Sync
+      syncing:    'syncing…',
+      synced:     'synced ✓',
+      syncFailed: 'sync failed',
+    },
+    zh: {
+      // 驗證畫面
+      authSubtitle:   '記住你終將死去——並以此為生。\n連結 GitHub 以儲存並同步你的設定。',
+      patLabel:       'GitHub 個人存取權杖',
+      authScopeNote:  '僅需 <strong style="color:#777">gist</strong> 權限 — <a href="https://github.com/settings/tokens/new?scopes=gist&description=memento-mori" target="_blank" rel="noopener">建立 classic token →</a>',
+      connectBtn:     '連結',
+      skipBtn:        '略過——僅本地儲存',
+      connectingBtn:  '連結中…',
+      invalidToken:   '權杖無效——請確認權限後重試。',
+      // 設定畫面
+      setupTitle:     '你的人生',
+      setupSubtitle:  '設定一次，隨時可更改。',
+      bdayLabel:      '出生日期',
+      lifespanLabel:  '預期壽命',
+      lifespanUnit:   '歲',
+      beginBtn:       '開始',
+      bdayRequired:   '請輸入你的出生日期。',
+      // 主畫面頂部
+      homeLink:       '← 首頁',
+      // 時鐘
+      yearsOld:       '歲',
+      pctLived:       '% 已過',
+      // 倒數計時
+      cdYears:  '年',
+      cdMonths: '月',
+      cdWeeks:  '週',
+      cdDays:   '天',
+      giftMsg:  '每一個超過預期的日子，都是禮物。',
+      // 網格
+      gridLabel: '人生週曆——每格代表一週',
+      // 統計
+      statLifeLived: '已過人生',
+      statSummers:   '剩餘夏天',
+      statWeekends:  '剩餘週末',
+      statMoons:     '剩餘滿月',
+      statDays:      '剩餘天數',
+      statHours:     '剩餘小時',
+      // 自由時間
+      ftSection:      '自由時間剩餘',
+      ftSleep:        '睡眠時數／天',
+      ftWork:         '工作時數／天',
+      ftWdays:        '工作天數／週',
+      ftRetire:       '退休年齡',
+      ftFreeHours:    '剩餘自由時數',
+      ftFreeYears:    '剩餘自由年數',
+      ftFreePct:      '佔剩餘人生',
+      ftFreeWeekends: '剩餘自由週末',
+      // 同步狀態
+      syncing:    '同步中…',
+      synced:     '已同步 ✓',
+      syncFailed: '同步失敗',
+    }
   };
 
-  // ── Boot ──
+  // 取得目前語言的翻譯 / Get translation for current language
+  function t(key) { return LANG[S.lang][key] ?? LANG.en[key] ?? key; }
+
+  // 套用語言到所有 data-i18n 元素 / Apply language to all data-i18n elements
+  function applyLang() {
+    document.documentElement.lang = S.lang === 'zh' ? 'zh-TW' : 'en';
+
+    // 更新靜態元素 / Update static elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+
+    // 驗證畫面：副標題換行 / Auth subtitle with newline
+    const authSub = document.querySelector('#s-auth .subtitle');
+    if (authSub) authSub.innerHTML = t('authSubtitle').replace('\n', '<br>');
+
+    // 驗證畫面：scope 提示 / Auth scope note
+    $('auth-scope-note').innerHTML = t('authScopeNote');
+
+    // 首頁連結 / Home link
+    $('home-link-text').textContent = t('homeLink');
+
+    // 語言按鈕高亮 / Highlight active lang button
+    $('lang-en').classList.toggle('active', S.lang === 'en');
+    $('lang-zh').classList.toggle('active', S.lang === 'zh');
+
+    // 動態區塊重新渲染 / Re-render dynamic sections
+    if (!$('s-main').classList.contains('hidden')) {
+      $('grid-label').textContent = t('gridLabel');
+      renderQuote();
+      renderLifeClock();
+      renderCountdown();
+      renderStats();
+      renderFreeTime();
+    }
+
+    ls('dzw_lang', S.lang);
+  }
+
+  // 切換語言 / Switch language
+  function setLang(lang) {
+    S.lang = lang;
+    applyLang();
+  }
+
+  // ────────────────────────────────────────────────
+  // 名言 / Quotes (英文 + 繁體中文)
+  // ────────────────────────────────────────────────
+  const QUOTES = [
+    { en: "It is not that we have a short time to live, but that we waste a great deal of it.",                                            zh: "並非我們的時間太短，而是我們浪費了太多。",                              author: "Seneca" },
+    { en: "You could leave life right now. Let that determine what you do and say and think.",                                             zh: "你隨時可能離開人世。讓這一點決定你的所作所為、言語與思想。",            author: "Marcus Aurelius" },
+    { en: "Think of yourself as dead. You have lived your life. Now take what's left and live it properly.",                               zh: "把自己想成已死之人。你已活過了你的人生。現在，好好活完剩下的時光。",    author: "Marcus Aurelius" },
+    { en: "Begin at once to live, and count each separate day as a separate life.",                                                        zh: "立刻開始生活，把每一天都當作一段獨立的人生。",                          author: "Seneca" },
+    { en: "Death smiles at us all; all we can do is smile back.",                                                                          zh: "死亡對我們微笑；我們所能做的，就是回以微笑。",                          author: "Marcus Aurelius" },
+    { en: "How long are you going to wait before you demand the best for yourself?",                                                       zh: "你還要等多久，才肯為自己爭取最好的？",                                  author: "Epictetus" },
+    { en: "He who fears death will never do anything worthy of a man who is alive.",                                                       zh: "懼怕死亡的人，永遠無法做出值得活著的事。",                              author: "Seneca" },
+    { en: "The whole future lies in uncertainty: live immediately.",                                                                       zh: "未來充滿不確定——活在當下。",                                            author: "Seneca" },
+    { en: "Do not act as if you had ten thousand years to live.",                                                                          zh: "不要活得好像你還有一萬年可活。",                                        author: "Marcus Aurelius" },
+    { en: "The greatest obstacle to living is expectancy, which hangs upon tomorrow and loses today.",                                     zh: "活著最大的障礙是期待，它寄託於明日，卻失去了今天。",                    author: "Seneca" },
+    { en: "The trouble is, you think you have time.",                                                                                      zh: "問題在於，你以為自己還有時間。",                                        author: "Buddha 佛陀" },
+    { en: "Waste no more time arguing about what a good man should be. Be one.",                                                           zh: "別再浪費時間爭論好人應該是什麼樣子。去成為那樣的人。",                  author: "Marcus Aurelius" },
+    { en: "Each day is a little life: every waking and rising a little birth, every going to rest and sleep a little death.",              zh: "每一天都是一段小小的人生：醒來是誕生，入睡是死亡。",                    author: "Arthur Schopenhauer" },
+    { en: "In the end, it's not the years in your life that count. It's the life in your years.",                                         zh: "到頭來，重要的不是你活了多少年，而是那些年裡你活得多精彩。",            author: "Abraham Lincoln" },
+    { en: "The fear of death follows from the fear of life. A man who lives fully is prepared to die at any time.",                        zh: "對死亡的恐懼，源於對生命的恐懼。活得充實的人，隨時準備好迎接死亡。",    author: "Mark Twain" },
+    { en: "We suffer more in imagination than in reality.",                                                                                zh: "我們在想像中受的苦，遠多於現實中。",                                    author: "Seneca" },
+    { en: "A day without laughter is a day wasted.",                                                                                      zh: "沒有笑聲的一天，是浪費掉的一天。",                                      author: "Charlie Chaplin" },
+    { en: "Life is what happens when you're busy making other plans.",                                                                     zh: "生命，就是你忙著做其他計畫時所發生的事。",                              author: "John Lennon" },
+    { en: "Perfection of character is this: to live each day as if it were your last, without frenzy, without apathy, without pretense.", zh: "品格的完美在於：把每一天都當作最後一天來活，不慌亂，不冷漠，不虛偽。", author: "Marcus Aurelius" },
+    { en: "It is not death that a man should fear, but he should fear never beginning to live.",                                           zh: "人不應該懼怕死亡，而應該懼怕從未真正開始活過。",                        author: "Marcus Aurelius" },
+    { en: "Memento mori — use it not to make you sad, but to make you bold.",                                                             zh: "Memento mori——用它讓自己勇敢，而不是悲傷。",                           author: "Stoic maxim 斯多葛格言" },
+    { en: "Time is a river of vanishing moments; its current is swift.",                                                                   zh: "時間是一條消逝瞬間的河流，它的流速迅急。",                              author: "Marcus Aurelius" },
+    { en: "You have power over your mind, not outside events. Realize this, and you will find strength.",                                  zh: "你能掌控的是你的心，而非外在事件。認清這一點，你將找到力量。",          author: "Marcus Aurelius" },
+    { en: "The impediment to action advances action. What stands in the way becomes the way.",                                             zh: "阻礙行動的，反而推進了行動。擋在路上的，就成了路。",                    author: "Marcus Aurelius" },
+    { en: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.",                                             zh: "沉浸在生命的美麗中。仰望星空，看見自己與它們一同奔馳。",                author: "Marcus Aurelius" },
+  ];
+
+  // ────────────────────────────────────────────────
+  // 應用程式狀態 / App state
+  // ────────────────────────────────────────────────
+  const S = {
+    pat:       null,
+    gistId:    null,
+    birthdate: null,
+    lifespan:  80,
+    local:     false,
+    sleepHrs:  8,
+    workHrs:   8,
+    workDays:  5,
+    retireAge: 65,
+    lang:      'en',   // 'en' | 'zh'
+  };
+
+  // ────────────────────────────────────────────────
+  // 啟動 / Boot
+  // ────────────────────────────────────────────────
   function boot() {
-    S.pat      = ls('dzw_pat');
-    S.gistId   = ls('dzw_gist_id');
-    S.local    = ls('dzw_local') === '1';
+    S.pat    = ls('dzw_pat');
+    S.gistId = ls('dzw_gist_id');
+    S.local  = ls('dzw_local') === '1';
+    S.lang   = ls('dzw_lang') || 'en';
+
     const saved = ls('dzw_cfg');
     if (saved) {
       const c = JSON.parse(saved);
-      S.birthdate = c.b; S.lifespan = c.l || 80;
-      S.sleepHrs  = c.sh ?? 8; S.workHrs = c.wh ?? 8;
+      S.birthdate = c.b; S.lifespan  = c.l  || 80;
+      S.sleepHrs  = c.sh ?? 8; S.workHrs   = c.wh ?? 8;
       S.workDays  = c.wd ?? 5; S.retireAge = c.ra ?? 65;
     }
+
+    applyLang(); // 套用語言 / Apply language before showing any screen
 
     if (S.birthdate) {
       showMain();
@@ -476,7 +653,9 @@
     }
   }
 
-  // ── Screen helpers ──
+  // ────────────────────────────────────────────────
+  // 畫面切換 / Screen helpers
+  // ────────────────────────────────────────────────
   function show(name) {
     ['auth','setup','main'].forEach(n => $('s-'+n).classList.add('hidden'));
     $('s-'+name).classList.remove('hidden');
@@ -491,18 +670,22 @@
 
   function showMain() {
     show('main');
+    $('grid-label').textContent = t('gridLabel');
     renderAll();
   }
 
-  // ── Auth screen ──
+  // ────────────────────────────────────────────────
+  // 驗證畫面事件 / Auth events
+  // ────────────────────────────────────────────────
   $('connect-btn').onclick = async () => {
     const pat = $('pat').value.trim();
     if (!pat) return;
-    setBtn('connect-btn', 'Connecting…', true);
+    $('connect-btn').textContent = t('connectingBtn');
+    $('connect-btn').disabled = true;
     $('auth-err').textContent = '';
     try {
       const r = await gh(pat, '/user');
-      if (!r.ok) throw new Error('Invalid token — check scopes and try again.');
+      if (!r.ok) throw new Error(t('invalidToken'));
       S.pat = pat; ls('dzw_pat', pat);
 
       const gist = await findGist(pat);
@@ -517,30 +700,35 @@
     } catch(e) {
       $('auth-err').textContent = e.message;
     } finally {
-      setBtn('connect-btn', 'Connect', false);
+      $('connect-btn').textContent = t('connectBtn');
+      $('connect-btn').disabled = false;
     }
   };
 
   $('skip-btn').onclick = () => { S.local = true; ls('dzw_local','1'); showSetup(); };
 
-  // ── Setup screen ──
+  // ────────────────────────────────────────────────
+  // 設定畫面事件 / Setup events
+  // ────────────────────────────────────────────────
   $('ls').oninput = function() { $('ls-display').textContent = this.value; };
 
   $('start-btn').onclick = async () => {
     const b = $('bday').value;
-    if (!b) { $('setup-err').textContent = 'Please enter your date of birth.'; return; }
+    if (!b) { $('setup-err').textContent = t('bdayRequired'); return; }
     S.birthdate = b;
     S.lifespan  = +$('ls').value;
     saveLocal();
-    if (S.pat) { setBadge('syncing…'); await pushGist(); }
+    if (S.pat) { setBadge(t('syncing')); await pushGist(); }
     showMain();
   };
 
   $('settings-btn').onclick = showSetup;
 
-  // ── Gist API ──
+  // ────────────────────────────────────────────────
+  // Gist API
+  // ────────────────────────────────────────────────
   const API = 'https://api.github.com';
-  const GF  = 'die-with-zero-settings.json';
+  const GF  = 'die-with-zero-settings.json'; // 保持檔名不變以維持現有同步 / Keep filename for existing sync
 
   function gh(pat, path, opts={}) {
     return fetch(API + path, {
@@ -566,39 +754,44 @@
   function applyGist(gist) {
     try {
       const c = JSON.parse(gist.files[GF].content);
-      S.birthdate = c.b; S.lifespan = c.l || 80;
-      S.sleepHrs  = c.sh ?? 8; S.workHrs = c.wh ?? 8;
+      S.birthdate = c.b; S.lifespan  = c.l  || 80;
+      S.sleepHrs  = c.sh ?? 8; S.workHrs   = c.wh ?? 8;
       S.workDays  = c.wd ?? 5; S.retireAge = c.ra ?? 65;
     } catch(_) {}
   }
 
   async function pushGist() {
-    const body = { description: 'Memento Mori — settings', public: false,
-      files: { [GF]: { content: JSON.stringify({b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge}) } } };
+    const body = {
+      description: 'Memento Mori — settings',
+      public: false,
+      files: { [GF]: { content: JSON.stringify({ b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge }) } }
+    };
     const url    = S.gistId ? `/gists/${S.gistId}` : '/gists';
     const method = S.gistId ? 'PATCH' : 'POST';
     const r = await gh(S.pat, url, { method, body: JSON.stringify(body) });
     if (r.ok) {
       const g = await r.json();
       S.gistId = g.id; ls('dzw_gist_id', g.id);
-      setBadge('synced ✓', 'ok');
+      setBadge(t('synced'), 'ok');
     } else {
-      setBadge('sync failed', 'err');
+      setBadge(t('syncFailed'), 'err');
     }
   }
 
   async function pullGist() {
     try {
-      setBadge('syncing…');
+      setBadge(t('syncing'));
       const r = await gh(S.pat, `/gists/${S.gistId}`);
       if (!r.ok) { setBadge(''); return; }
       const g = await r.json();
       applyGist(g); saveLocal(); renderAll();
-      setBadge('synced ✓', 'ok');
+      setBadge(t('synced'), 'ok');
     } catch(_) { setBadge(''); }
   }
 
-  // ── localStorage helpers ──
+  // ────────────────────────────────────────────────
+  // localStorage 工具 / localStorage helpers
+  // ────────────────────────────────────────────────
   function ls(k, v) {
     if (v === undefined) return localStorage.getItem(k);
     if (v === null) localStorage.removeItem(k);
@@ -606,12 +799,7 @@
   }
 
   function saveLocal() {
-    ls('dzw_cfg', JSON.stringify({b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge}));
-  }
-
-  // ── UI helpers ──
-  function setBtn(id, txt, disabled) {
-    const b = $(id); b.textContent = txt; b.disabled = disabled;
+    ls('dzw_cfg', JSON.stringify({ b: S.birthdate, l: S.lifespan, sh: S.sleepHrs, wh: S.workHrs, wd: S.workDays, ra: S.retireAge }));
   }
 
   function setBadge(txt, cls='') {
@@ -620,9 +808,29 @@
     el.className = 'sync-badge' + (cls ? ' '+cls : '');
   }
 
-  // ── Render ──
-  function renderAll() { renderQuote(); renderLifeClock(); renderCountdown(); renderGrid(); renderStats(); renderFreeTime(); }
+  // ────────────────────────────────────────────────
+  // 渲染 / Render
+  // ────────────────────────────────────────────────
+  function renderAll() {
+    renderQuote();
+    renderLifeClock();
+    renderCountdown();
+    renderGrid();
+    renderStats();
+    renderFreeTime();
+  }
 
+  // 每日名言 / Daily quote
+  function renderQuote() {
+    const now = new Date();
+    const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+    const q = QUOTES[dayOfYear % QUOTES.length];
+    const text   = S.lang === 'zh' ? q.zh : q.en;
+    const author = q.author;
+    $('daily-quote').innerHTML = `<div class="quote-text">"${text}"</div><div class="quote-author">— ${author}</div>`;
+  }
+
+  // 生命時鐘 / Life clock
   function renderLifeClock() {
     const now   = new Date();
     const birth = new Date(S.birthdate);
@@ -648,64 +856,21 @@
           transform="rotate(-90 ${cx} ${cy})"/>
         <circle cx="${dx}" cy="${dy}" r="7" fill="#c8a96e"/>
         <circle cx="${dx}" cy="${dy}" r="13" fill="none" stroke="#c8a96e" stroke-width="1" opacity="0.3"/>
-        <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#e8e8e8" font-size="34" font-weight="200" font-family="-apple-system,sans-serif">${age}</text>
-        <text x="${cx}" y="${cy + 13}" text-anchor="middle" fill="#555" font-size="10" font-family="-apple-system,sans-serif" letter-spacing="2">YEARS OLD</text>
-        <text x="${cx}" y="${cy + 32}" text-anchor="middle" fill="#c8a96e" font-size="11" font-family="-apple-system,sans-serif">${pct.toFixed(1)}% lived</text>
+        <text x="${cx}" y="${cy - 6}"  text-anchor="middle" fill="#e8e8e8" font-size="34" font-weight="200" font-family="-apple-system,sans-serif">${age}</text>
+        <text x="${cx}" y="${cy + 13}" text-anchor="middle" fill="#555"    font-size="10" font-family="-apple-system,sans-serif" letter-spacing="2">${t('yearsOld')}</text>
+        <text x="${cx}" y="${cy + 32}" text-anchor="middle" fill="#c8a96e" font-size="11" font-family="-apple-system,sans-serif">${pct.toFixed(1)}${t('pctLived')}</text>
       </svg>`;
   }
 
-  function renderQuote() {
-    const now = new Date();
-    const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
-    const q = QUOTES[dayOfYear % QUOTES.length];
-    $('daily-quote').innerHTML = `<div class="quote-text">"${q.text}"</div><div class="quote-author">— ${q.author}</div>`;
-  }
-
-  function renderFreeTime() {
-    const now   = new Date();
-    const birth = new Date(S.birthdate);
-    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
-    const daysLeft = Math.max(0, (end - now) / 864e5);
-
-    const retire = new Date(birth); retire.setFullYear(retire.getFullYear() + S.retireAge);
-    const workDaysLeft = Math.max(0, (Math.min(retire, end) - now) / 864e5) * (S.workDays / 7);
-
-    const totalHrs = daysLeft * 24;
-    const sleepHrs = daysLeft * S.sleepHrs;
-    const workHrs  = workDaysLeft * S.workHrs;
-    const freeHrs  = Math.max(0, totalHrs - sleepHrs - workHrs);
-    const freeYrs  = freeHrs / (365.25 * 24);
-    const freePct  = totalHrs > 0 ? (freeHrs / totalHrs * 100) : 0;
-
-    const fmt = n => Math.floor(n).toLocaleString();
-
-    $('ft-stats').innerHTML = [
-      [fmt(freeHrs),        'Free Hours Left'],
-      [fmt(freeYrs),        'Free Years Left'],
-      [freePct.toFixed(1) + '%', 'Of Remaining Life'],
-      [fmt(freeHrs / 24 / 7), 'Free Weekends Left'],
-    ].map(([v, l]) => `
-      <div class="stat">
-        <div class="stat-val">${v}</div>
-        <div class="stat-lbl">${l}</div>
-      </div>`).join('');
-
-    $('ft-sleep').value  = S.sleepHrs;
-    $('ft-work').value   = S.workHrs;
-    $('ft-wdays').value  = S.workDays;
-    $('ft-retire').value = S.retireAge;
-  }
-
+  // 倒數計時 / Countdown
   function renderCountdown() {
     const now   = new Date();
     const birth = new Date(S.birthdate);
     const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
-
-    const msLeft  = end - now;
-    const totalMs = end - birth;
+    const msLeft = end - now;
 
     if (msLeft <= 0) {
-      $('countdown').innerHTML = '<div class="cd-unit"><div class="cd-val" style="font-size:1.2rem">Every day beyond your estimate is a gift.</div></div>';
+      $('countdown').innerHTML = `<div class="cd-unit"><div class="cd-val" style="font-size:1.2rem">${t('giftMsg')}</div></div>`;
       return;
     }
 
@@ -716,10 +881,10 @@
     const days = Math.floor(totalDays % 7);
 
     $('countdown').innerHTML = [
-      [yrs,  'Years'],
-      [mos,  'Months'],
-      [wks,  'Weeks'],
-      [days, 'Days']
+      [yrs,  t('cdYears')],
+      [mos,  t('cdMonths')],
+      [wks,  t('cdWeeks')],
+      [days, t('cdDays')]
     ].map(([v, l]) => `
       <div class="cd-unit">
         <div class="cd-val">${v.toLocaleString()}</div>
@@ -727,11 +892,11 @@
       </div>`).join('');
   }
 
+  // 人生週曆 / Life-in-weeks grid
   function renderGrid() {
     const birth = new Date(S.birthdate);
     const now   = new Date();
-    const msPerWeek  = 6048e5;
-    const weeksLived = Math.floor((now - birth) / msPerWeek);
+    const weeksLived = Math.floor((now - birth) / 6048e5);
     const grid = $('life-grid');
     grid.innerHTML = '';
 
@@ -748,31 +913,30 @@
         const idx = y * 52 + w;
         const box = document.createElement('div');
         box.className = 'wk ' + (idx < weeksLived ? 'past' : idx === weeksLived ? 'now' : 'future');
-        box.title = `Age ${y}, week ${w + 1}`;
+        box.title = S.lang === 'zh' ? `${y} 歲，第 ${w + 1} 週` : `Age ${y}, week ${w + 1}`;
         row.appendChild(box);
       }
       grid.appendChild(row);
     }
   }
 
+  // 統計卡片 / Stats
   function renderStats() {
     const now   = new Date();
     const birth = new Date(S.birthdate);
     const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
     const msLeft   = Math.max(0, end - now);
     const daysLeft = msLeft / 864e5;
-    const totalMs  = end - birth;
-    const pct      = Math.min(100, (now - birth) / totalMs * 100);
-
+    const pct      = Math.min(100, (now - birth) / (end - birth) * 100);
     const fmt = n => Math.floor(n).toLocaleString();
 
     $('stats').innerHTML = [
-      [pct.toFixed(1) + '%', 'Life Lived'],
-      [fmt(daysLeft / 365.25), 'Summers Left'],
-      [fmt(daysLeft / 7), 'Weekends Left'],
-      [fmt(daysLeft / 29.53), 'Full Moons Left'],
-      [fmt(daysLeft), 'Days Remaining'],
-      [fmt(daysLeft * 24), 'Hours Remaining'],
+      [pct.toFixed(1) + '%',       t('statLifeLived')],
+      [fmt(daysLeft / 365.25),     t('statSummers')],
+      [fmt(daysLeft / 7),          t('statWeekends')],
+      [fmt(daysLeft / 29.53),      t('statMoons')],
+      [fmt(daysLeft),              t('statDays')],
+      [fmt(daysLeft * 24),         t('statHours')],
     ].map(([v, l]) => `
       <div class="stat">
         <div class="stat-val">${v}</div>
@@ -780,7 +944,44 @@
       </div>`).join('');
   }
 
-  // ── Free time input listeners ──
+  // 自由時間 / Free time
+  function renderFreeTime() {
+    const now   = new Date();
+    const birth = new Date(S.birthdate);
+    const end   = new Date(birth); end.setFullYear(end.getFullYear() + S.lifespan);
+    const daysLeft = Math.max(0, (end - now) / 864e5);
+
+    const retire = new Date(birth); retire.setFullYear(retire.getFullYear() + S.retireAge);
+    const workDaysLeft = Math.max(0, (Math.min(retire, end) - now) / 864e5) * (S.workDays / 7);
+
+    const totalHrs = daysLeft * 24;
+    const sleepHrs = daysLeft * S.sleepHrs;
+    const workHrs  = workDaysLeft * S.workHrs;
+    const freeHrs  = Math.max(0, totalHrs - sleepHrs - workHrs);
+    const freeYrs  = freeHrs / (365.25 * 24);
+    const freePct  = totalHrs > 0 ? (freeHrs / totalHrs * 100) : 0;
+    const fmt = n => Math.floor(n).toLocaleString();
+
+    $('ft-stats').innerHTML = [
+      [fmt(freeHrs),               t('ftFreeHours')],
+      [fmt(freeYrs),               t('ftFreeYears')],
+      [freePct.toFixed(1) + '%',   t('ftFreePct')],
+      [fmt(freeHrs / 24 / 7),      t('ftFreeWeekends')],
+    ].map(([v, l]) => `
+      <div class="stat">
+        <div class="stat-val">${v}</div>
+        <div class="stat-lbl">${l}</div>
+      </div>`).join('');
+
+    $('ft-sleep').value  = S.sleepHrs;
+    $('ft-work').value   = S.workHrs;
+    $('ft-wdays').value  = S.workDays;
+    $('ft-retire').value = S.retireAge;
+  }
+
+  // ────────────────────────────────────────────────
+  // 自由時間輸入事件 / Free time input events
+  // ────────────────────────────────────────────────
   function ftChanged() {
     S.sleepHrs  = Math.max(4,  Math.min(12, +$('ft-sleep').value  || 8));
     S.workHrs   = Math.max(0,  Math.min(16, +$('ft-work').value   || 8));
@@ -792,7 +993,9 @@
   }
   ['ft-sleep','ft-work','ft-wdays','ft-retire'].forEach(id => $(id).addEventListener('change', ftChanged));
 
-  // ── Live countdown tick ──
+  // ────────────────────────────────────────────────
+  // 每秒更新 / Live tick
+  // ────────────────────────────────────────────────
   setInterval(() => {
     if (!$('s-main').classList.contains('hidden')) { renderLifeClock(); renderCountdown(); }
   }, 1000);
