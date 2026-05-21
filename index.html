@@ -194,6 +194,9 @@
     }
     .icon-btn:hover { color: #888; }
 
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 400; padding: 24px; }
+    .modal-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; padding: 32px 28px; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 16px; }
+
     /* ── 生命時鐘 / Life clock ── */
     .life-clock { display: flex; justify-content: center; margin-bottom: 36px; }
 
@@ -321,24 +324,20 @@
   <button class="lang-btn"        id="lang-zh" onclick="setLang('zh')">中文</button>
 </div>
 
-<!-- ── 驗證畫面 / AUTH ── -->
-<div id="s-auth" class="center-screen">
-  <div class="logo">Life Clock</div>
-  <p class="subtitle" data-i18n="authSubtitle"></p>
-
-  <div class="form-group">
-    <label class="form-label" for="pat" data-i18n="patLabel"></label>
-    <input type="password" id="pat" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+<!-- ── Gist 同步 Modal / Gist Sync Modal ── -->
+<div id="s-auth" class="modal-overlay hidden">
+  <div class="modal-card">
+    <p class="subtitle" id="auth-subtitle-text"></p>
+    <div class="form-group">
+      <label class="form-label" for="pat" data-i18n="patLabel"></label>
+      <input type="password" id="pat" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="subtitle"><span id="auth-scope-note"></span></p>
+    <button class="btn"       id="connect-btn" data-i18n="connectBtn"></button>
+    <div class="err"          id="auth-err"></div>
+    <button class="btn-ghost" id="disconnect-btn" style="display:none"></button>
+    <button class="btn-ghost" id="skip-btn"    data-i18n="skipBtn"></button>
   </div>
-
-  <p class="subtitle">
-    <!-- "Needs gist scope" note rendered by applyLang() -->
-    <span id="auth-scope-note"></span>
-  </p>
-
-  <button class="btn"       id="connect-btn" data-i18n="connectBtn"></button>
-  <div class="err"          id="auth-err"></div>
-  <button class="btn-ghost" id="skip-btn"    data-i18n="skipBtn"></button>
 </div>
 
 <!-- ── 設定畫面 / SETUP ── -->
@@ -370,6 +369,7 @@
       <span class="top-logo">Life Clock</span>
       <div class="top-right">
         <span class="sync-badge" id="sync-badge"></span>
+        <button class="icon-btn" id="gist-btn"></button>
         <button class="icon-btn" id="settings-btn" title="Edit settings">⚙</button>
       </div>
     </div>
@@ -428,11 +428,13 @@
   const LANG = {
     en: {
       // 驗證畫面 / Auth screen
-      authSubtitle:   'Remember you will die — and live accordingly.\nConnect GitHub to save & sync your settings.',
+      authSubtitle:   'Connect GitHub to sync settings across devices.',
       patLabel:       'GitHub Personal Access Token',
       authScopeNote:  'Needs <strong style="color:#777">gist</strong> scope only — <a href="https://github.com/settings/tokens/new?scopes=gist&description=life-clock" target="_blank" rel="noopener">create classic token →</a>',
       connectBtn:     'Connect',
-      skipBtn:        'Skip — local only',
+      skipBtn:        'Cancel',
+      disconnectBtn:  'Disconnect',
+      gistBtn:        'Gist Sync',
       connectingBtn:  'Connecting…',
       invalidToken:   'Invalid token — check scopes and try again.',
       // 設定畫面 / Setup screen
@@ -480,11 +482,13 @@
     },
     zh: {
       // 驗證畫面
-      authSubtitle:   '記住你終將死去——並以此為生。\n連結 GitHub 以儲存並同步你的設定。',
+      authSubtitle:   '連結 GitHub 以跨裝置同步設定。',
       patLabel:       'GitHub 個人存取權杖',
       authScopeNote:  '僅需 <strong style="color:#777">gist</strong> 權限 — <a href="https://github.com/settings/tokens/new?scopes=gist&description=life-clock" target="_blank" rel="noopener">建立 classic token →</a>',
       connectBtn:     '連結',
-      skipBtn:        '略過——僅本地儲存',
+      skipBtn:        '取消',
+      disconnectBtn:  '中斷連線',
+      gistBtn:        'Gist 同步',
       connectingBtn:  '連結中…',
       invalidToken:   '權杖無效——請確認權限後重試。',
       // 設定畫面
@@ -544,12 +548,15 @@
       el.textContent = t(el.dataset.i18n);
     });
 
-    // 驗證畫面：副標題換行 / Auth subtitle with newline
-    const authSub = document.querySelector('#s-auth .subtitle');
-    if (authSub) authSub.innerHTML = t('authSubtitle').replace('\n', '<br>');
+    // Gist modal subtitle
+    $('auth-subtitle-text').textContent = t('authSubtitle');
 
     // 驗證畫面：scope 提示 / Auth scope note
     $('auth-scope-note').innerHTML = t('authScopeNote');
+
+    // Gist buttons
+    $('gist-btn').textContent       = t('gistBtn');
+    $('disconnect-btn').textContent = t('disconnectBtn');
 
     // 首頁連結 / Home link
     $('home-link-text').textContent = t('homeLink');
@@ -616,7 +623,6 @@
     gistId:    null,
     birthdate: null,
     lifespan:  80,
-    local:     false,
     sleepHrs:  8,
     workHrs:   8,
     workDays:  5,
@@ -630,7 +636,6 @@
   function boot() {
     S.pat    = ls('dzw_pat');
     S.gistId = ls('dzw_gist_id');
-    S.local  = ls('dzw_local') === '1';
     S.lang   = ls('dzw_lang') || 'en';
 
     const saved = ls('dzw_cfg');
@@ -646,10 +651,8 @@
     if (S.birthdate) {
       showMain();
       if (S.pat && S.gistId) pullGist();
-    } else if (S.pat || S.local) {
-      showSetup();
     } else {
-      show('auth');
+      showSetup();
     }
   }
 
@@ -657,7 +660,7 @@
   // 畫面切換 / Screen helpers
   // ────────────────────────────────────────────────
   function show(name) {
-    ['auth','setup','main'].forEach(n => $('s-'+n).classList.add('hidden'));
+    ['setup','main'].forEach(n => $('s-'+n).classList.add('hidden'));
     $('s-'+name).classList.remove('hidden');
   }
 
@@ -693,9 +696,10 @@
         S.gistId = gist.id; ls('dzw_gist_id', gist.id);
         applyGist(gist);
         saveLocal();
-        showMain();
+        $('s-auth').classList.add('hidden');
+        if (S.birthdate) showMain(); else showSetup();
       } else {
-        showSetup();
+        $('s-auth').classList.add('hidden');
       }
     } catch(e) {
       $('auth-err').textContent = e.message;
@@ -705,7 +709,20 @@
     }
   };
 
-  $('skip-btn').onclick = () => { S.local = true; ls('dzw_local','1'); showSetup(); };
+  $('skip-btn').onclick = () => { $('s-auth').classList.add('hidden'); };
+  $('gist-btn').onclick = () => {
+    $('disconnect-btn').style.display = S.pat ? '' : 'none';
+    $('pat').value = '';
+    $('auth-err').textContent = '';
+    $('s-auth').classList.remove('hidden');
+  };
+  $('disconnect-btn').onclick = () => {
+    S.pat = null; S.gistId = null;
+    ls('dzw_pat', null); ls('dzw_gist_id', null);
+    setBadge('');
+    $('s-auth').classList.add('hidden');
+  };
+  $('s-auth').onclick = e => { if (e.target === $('s-auth')) $('s-auth').classList.add('hidden'); };
 
   // ────────────────────────────────────────────────
   // 設定畫面事件 / Setup events
